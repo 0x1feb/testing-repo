@@ -43,21 +43,3 @@ jobs:
 
       - name: Build without tests
         run: ./gradlew build -x test
-
-  dependency-submission:
-
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      # See: https://github.com/marketplace/actions/build-with-gradle#the-dependency-submission-action
-      - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@v4
