@@ -6,7 +6,7 @@ on:
 
 jobs:
   call-build:
-    uses: ./.github/workflow/reusable-test-and-build.yml
+    uses: ./.github/workflows/reusable-test-and-build.yml
     with:
       checkout-ref: ${{ github.event.release.tag_name }}
       fetch-depth: '0'
