@@ -2,14 +2,14 @@ name: Release (production)
 
 on:
   release:
-    types: [ published ]
+    types: [published]
 
 jobs:
   call-build:
     uses: ./.github/workflows/reusable-test-and-build.yml
     with:
       checkout-ref: ${{ github.event.release.tag_name }}
-      fetch-depth: '0'
+      fetch-depth: "0"
       upload-jar-artifact: true
       jar-artifact-name: package-production
     permissions:
@@ -34,7 +34,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
-          files: build/libs
+          files: build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
