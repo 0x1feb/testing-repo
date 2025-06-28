@@ -12,7 +12,7 @@ on:
 
 jobs:
   call-build:
-    uses: ./.github/workflow/reusable-test-and-build.yml
+    uses: ./.github/workflows/reusable-test-and-build.yml
     permissions:
       contents: read
     secrets: inherit

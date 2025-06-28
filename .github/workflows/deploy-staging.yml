@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-build:
-    uses: ./.github/workflow/reusable-test-and-build.yml
+    uses: ./.github/workflows/reusable-test-and-build.yml
     with:
       upload-jar-artifact: true
       jar-artifact-name: package-staging
