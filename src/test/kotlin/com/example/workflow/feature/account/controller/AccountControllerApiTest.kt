@@ -9,6 +9,7 @@ import com.example.workflow.testconfig.NoSecurityConfig
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import java.util.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -22,32 +23,24 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.assertj.MockMvcTester
 import org.springframework.test.web.servlet.assertj.MvcTestResult
-import java.util.*
 
 @WebMvcTest(AccountController::class)
 @Import(AccountControllerApiTest.MockConfig::class, NoSecurityConfig::class)
 class AccountControllerApiTest {
-    @Autowired
-    private lateinit var mockMvcTester: MockMvcTester
+    @Autowired private lateinit var mockMvcTester: MockMvcTester
 
-    @Autowired
-    private lateinit var getAccountUseCase: GetAccountUseCase
+    @Autowired private lateinit var getAccountUseCase: GetAccountUseCase
 
-    @Autowired
-    private lateinit var getAccountPresenter: GetAccountPresenter
+    @Autowired private lateinit var getAccountPresenter: GetAccountPresenter
 
     @TestConfiguration
     class MockConfig {
-        @Bean
-        fun getAccountUseCase(): GetAccountUseCase = mockk()
+        @Bean fun getAccountUseCase(): GetAccountUseCase = mockk()
 
-        @Bean
-        fun getAccountPresenter(): GetAccountPresenter = mockk()
+        @Bean fun getAccountPresenter(): GetAccountPresenter = mockk()
     }
 
-    @BeforeEach
-    fun setUp() {
-    }
+    @BeforeEach fun setUp() {}
 
     @AfterEach
     fun tearDown() {
@@ -60,45 +53,46 @@ class AccountControllerApiTest {
         fun `GET v1_accounts_me should return account information`() {
             // Arrange
             val accountId = UUID.randomUUID()
-            val emailAddress = "user@example.com"
+            val emailAddress = "user1@example.com"
 
             val accountViewDtoMock = mockk<AccountViewDto>()
-            val useCaseResult = GetAccountUseCase.Result(
-                accountViewDto = accountViewDtoMock,
-            )
+            val useCaseResult =
+                    GetAccountUseCase.Result(
+                            accountViewDto = accountViewDtoMock,
+                    )
 
-            val accountViewResponse = AccountViewResponse(
-                id = accountId,
-                emailAddress = emailAddress,
-                roleNames = listOf("USER"),
-            )
-            val presenterResult = GetAccountPresenter.Result(
-                response = accountViewResponse
-            )
+            val accountViewResponse =
+                    AccountViewResponse(
+                            id = accountId,
+                            emailAddress = emailAddress,
+                            roleNames = listOf("USER"),
+                    )
+            val presenterResult = GetAccountPresenter.Result(response = accountViewResponse)
 
             every { getAccountUseCase.execute() } returns useCaseResult
             every { getAccountPresenter.toResponse(useCaseResult) } returns presenterResult
 
             // Act
-            val testResult: MvcTestResult = mockMvcTester
-                .get()
-                .uri("${ApiPath.Account.BASE}${ApiPath.Account.ME}")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
+            val testResult: MvcTestResult =
+                    mockMvcTester
+                            .get()
+                            .uri("${ApiPath.Account.BASE}${ApiPath.Account.ME}")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .exchange()
 
             // Assert
             assertThat(testResult)
-                .hasStatusOk()
-                .bodyJson()
-                .isLenientlyEqualTo(
-                    """
+                    .hasStatusOk()
+                    .bodyJson()
+                    .isLenientlyEqualTo(
+                            """
                 {
                     "id": "$accountId",
-                    "emailAddress": "$emailAddress", 
+                    "emailAddress": "$emailAddress",
                     "roleNames": ["USER"]
                 }
                 """.trimIndent()
-                )
+                    )
         }
     }
 }
